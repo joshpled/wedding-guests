@@ -84,13 +84,71 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
 </head>
 <body>
 <div class="wrap">
-
   <header class="hero">
     <h1>Joshua<span class="amp">&amp;</span>Gabriel</h1>
     <div class="s">Sunday, the sixth of September, two thousand and twenty-six<br>
       The American Theater &middot; Charleston, South Carolina</div>
     <div class="rule"></div>
   </header>
+
+  <div class="card pad" id="whoBox" style="margin-bottom:8px">
+    <p style="margin:0 0 14px;color:var(--ink-2);line-height:1.6">
+      Put your name in and this page will show everything that applies to you,
+      including anything we still need from you.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="gName" type="text" placeholder="First and last name" autocomplete="name"
+        style="flex:1;min-width:200px;border:1px solid var(--rule);border-radius:var(--r);padding:11px 13px;font:inherit;font-size:15px;background:#fff;color:var(--ink)">
+      <button class="btn" id="lookupBtn" type="button">Continue</button>
+    </div>
+    <div class="msg" id="formMsg" hidden></div>
+  </div>
+
+  <div class="note" id="satNote" hidden style="margin-top:20px">
+    <h3>You are with us on Saturday too</h3>
+    <p>There is a rehearsal and a pool party the day before. Both are below.</p>
+  </div>
+
+  <div id="satBlock" hidden>
+  <h2 class="sec">Saturday 5 September</h2>
+
+  <div class="card pad">
+    <div class="row key"><div class="t">2:00</div>
+      <div><div class="e">Rehearsal</div>
+        <div class="w">The American Theater, 446 King Street. Loraine runs it and it is quick &mdash;
+          we walk through where everyone stands and when to move.
+          <strong>Only the wedding party and immediate family are needed.</strong></div></div></div>
+    <div class="row key"><div class="t">5:00</div>
+      <div><div class="e">Pool party</div>
+        <div class="w">Restore at Carolina Park, 1588 Bloom St, Mount Pleasant.
+          Runs until 9:00. Swim, eat, relax &mdash; there is nothing formal about it.</div></div></div>
+    <div class="row"><div class="t">9:00</div>
+      <div><div class="e">Home early</div>
+        <div class="w">Deliberately. There is a long day after it.</div></div></div>
+  </div>
+
+  <div class="info" style="margin-top:16px">
+    <div class="b"><h4>Food</h4>
+      <p>Pizza, plus other food and drinks. All provided.</p></div>
+    <div class="b"><h4>Drinks &mdash; BYOB</h4>
+      <p>Soft drinks and water are there. If you want something stronger, bring it with you &mdash;
+        <strong>cans only, no glass</strong>. It is a pool deck and bare feet.</p></div>
+    <div class="b"><h4>Bring</h4>
+      <p>Swimsuit, a towel, sunscreen, and your drinks in cans. September in Charleston is still hot.</p></div>
+    <div class="b"><h4>Getting there</h4>
+      <p>About 25 minutes from downtown over the Ravenel Bridge. Leave time after the rehearsal
+        and put the address in before you set off.</p></div>
+    <div class="b"><h4>Kids</h4>
+      <p>Very welcome on Saturday. Just keep an eye on your own by the water.</p></div>
+  </div>
+
+  <div class="note">
+    <h3>The two Saturday places are not near each other</h3>
+    <p>The rehearsal is downtown on King Street. The pool party is across the bridge in
+      Mount Pleasant. Put <strong>both</strong> addresses in your phone before Saturday
+      rather than following the car in front.</p>
+  </div>
+
+  </div>
 
   <div class="strip">
     <div><div class="k">Doors</div><div class="v">4:30 PM</div></div>
@@ -152,7 +210,7 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
 
     <div class="course">
       <h3>As you arrive</h3><div class="when">4:30 &middot; Lobby</div>
-      <div class="dish"><div class="n">Buttered popcorn</div>
+      <div class="dish"><div class="n">Popcorn</div>
         <div class="d">At the concession stand. It is an old theatre &mdash; we could not resist.</div></div>
     </div>
 
@@ -233,6 +291,16 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
           <span class="hint">Tell us even if you think you have mentioned it before.</span>
         </label>
         
+        <div id="rsvpWrap" hidden>
+          <label class="f"><span>Coming to Saturday?</span>
+            <select id="gRsvp">
+              <option value="">Choose one</option>
+              <option value="yes">Yes, count me in</option>
+              <option value="no">Cannot make Saturday</option>
+              <option value="maybe">Not sure yet</option>
+            </select>
+          </label>
+        </div>
         <label class="f"><span>Anything else</span>
           <textarea id="gNotes" placeholder="Optional"></textarea>
         </label>
@@ -270,70 +338,74 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 async function call(payload){
-  const r = await fetch(FN, {
-    method:'POST',
-    headers:{'content-type':'application/json'},
-    body: JSON.stringify(payload)
-  });
-  if (!r.ok) throw new Error('Request failed');
+  const r = await fetch(FN, { method:'POST', headers:{'content-type':'application/json'},
+                              body: JSON.stringify(payload) });
+  if (!r.ok) throw new Error('failed');
   return r.json();
 }
 
-let matched = null;
+let isPool = false;
 
 $('#lookupBtn').onclick = async () => {
   const name = $('#gName').value.trim();
   if (!name){ show('Type your name first.','err'); return; }
-  $('#lookupBtn').disabled = true;
+  const btn = $('#lookupBtn');
+  btn.disabled = true; btn.textContent = 'One moment…';
   try {
     const res = await call({ action:'lookup', name });
     if (res.found){
-      matched = res.name;
+      isPool = !!res.pool;
       const miss = Object.entries(res.missing).filter(([,v])=>v).map(([k])=>k);
-      show(miss.length
-        ? `Found you, ${esc(res.name)}. We are missing your <strong>${miss.join(', ')}</strong> — fill in what you can below.`
-        : `Found you, ${esc(res.name)}. We have everything, but update anything below if it has changed.`,
-        'ok');
+      show(`Hello ${esc(res.name)}.` + (miss.length
+        ? ` We are missing your <strong>${miss.join(' and ')}</strong> — there is a short form further down.`
+        : ' Everything below applies to you.'), 'ok');
+      if (isPool){
+        $('#satBlock').hidden = false;
+        $('#satNote').hidden = false;
+        if ($('#rsvpWrap')) $('#rsvpWrap').hidden = false;
+      }
     } else {
-      matched = null;
-      show('We could not match that name exactly — no problem. Fill in the form and we will sort it out.','info');
+      isPool = false;
+      show('We could not match that name exactly — no problem, everything below still applies. '
+         + 'Fill in the form and we will sort it out.', 'info');
     }
     $('#formFields').hidden = false;
   } catch {
-    show('Could not reach the form right now. Try again in a moment.','err');
+    show('Could not reach us just now. Everything below still applies — try the form again in a moment.','err');
     $('#formFields').hidden = false;
   }
-  $('#lookupBtn').disabled = false;
+  btn.disabled = false; btn.textContent = 'Continue';
 };
 
-$('#gName').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('#lookupBtn').click(); } });
+$('#gName').addEventListener('keydown', e => {
+  if (e.key === 'Enter'){ e.preventDefault(); $('#lookupBtn').click(); }
+});
 
 $('#submitBtn').onclick = async () => {
   const name = $('#gName').value.trim();
-  if (!name){ show('Type your name first.','err'); return; }
+  if (!name){ show('Type your name at the top first.','err'); return; }
   const payload = {
     action:'submit', name,
     email: $('#gEmail').value, phone: $('#gPhone').value,
     dietary: $('#gDiet').value, notes: $('#gNotes').value
   };
   const rsvp = $('#gRsvp');
-  if (rsvp) payload.pool_rsvp = rsvp.value;
+  if (rsvp && isPool) payload.pool_rsvp = rsvp.value;
   if (!payload.email && !payload.phone && !payload.dietary && !payload.notes && !payload.pool_rsvp){
     show('Add at least one thing before sending.','err'); return;
   }
-  $('#submitBtn').disabled = true;
-  $('#submitBtn').textContent = 'Sending…';
+  const btn = $('#submitBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
   try {
     await call(payload);
     $('#formCard').innerHTML =
       '<div class="pad" style="text-align:center;padding:38px 24px">' +
       '<h3 style="font-size:15px;letter-spacing:.16em;color:var(--moss);margin-bottom:9px">Thank you</h3>' +
       '<p style="margin:0;color:var(--ink-2);font-size:15px;line-height:1.6">' +
-      'Got it. Josh and Gabriel will see this. If anything else comes up, just text them.</p></div>';
+      'Got it. If anything else comes up, just text Josh or Gabriel.</p></div>';
   } catch {
     show('That did not send. Check your connection and try again.','err');
-    $('#submitBtn').disabled = false;
-    $('#submitBtn').textContent = 'Send';
+    btn.disabled = false; btn.textContent = 'Send';
   }
 };
 
