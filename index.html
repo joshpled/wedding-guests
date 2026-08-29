@@ -54,6 +54,44 @@ h2.sec{font-size:14px;letter-spacing:.2em;color:var(--brass);border-bottom:1px s
 .course .when{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:11.5px;color:var(--ink-3);font-weight:600;margin-bottom:9px}
 .course{margin-bottom:24px}
 .course:last-child{margin-bottom:0}
+.lookup{display:flex;gap:8px;flex-wrap:wrap}
+.lookup input{flex:1;min-width:200px;border:1px solid var(--rule);border-radius:var(--r);
+  padding:12px 14px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.lookup input:focus{border-color:var(--brass);outline:none;box-shadow:0 0 0 3px var(--brass-lo)}
+
+#formFields{margin-top:20px;padding-top:20px;border-top:1px solid var(--rule-2)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.fields .wide{grid-column:1 / -1}
+.f{display:block;position:relative}
+.f span{display:block;font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;
+  letter-spacing:.13em;font-size:11px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
+.f input,.f textarea{width:100%;border:1px solid var(--rule);border-radius:var(--r);
+  padding:11px 13px;font:inherit;font-size:15.5px;background:#fff;color:var(--ink)}
+.f textarea{min-height:72px;resize:vertical;line-height:1.55}
+.f input:focus,.f textarea:focus{border-color:var(--brass);outline:none;box-shadow:0 0 0 3px var(--brass-lo)}
+.f .have{display:block;font-style:normal;font-size:12.5px;color:var(--moss);margin-top:5px;font-weight:600}
+.f.filled input,.f.filled textarea{background:var(--moss-lo);border-color:var(--moss-line)}
+.btn.wide{width:100%;margin-top:18px;padding:14px;font-size:16px}
+
+.rsvp{background:var(--brass-lo);border:1px solid var(--brass-line);border-radius:var(--r);
+  padding:18px 20px;margin-bottom:20px}
+.rsvp-q{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.12em;
+  font-size:17px;font-weight:700;color:var(--brass)}
+.rsvp-sub{font-size:14px;color:var(--ink-2);margin:4px 0 14px;line-height:1.5}
+.rsvp-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rsvp-opts button{display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#fff;border:2px solid var(--rule);border-radius:var(--r);padding:14px 10px;
+  font:inherit;font-size:14.5px;font-weight:600;color:var(--ink-2);cursor:pointer;line-height:1.3;
+  text-align:center;min-height:56px}
+.rsvp-opts button:hover{border-color:var(--brass-line);background:#fff}
+.rsvp-opts button .ic{font-size:15px;font-weight:700}
+.rsvp-opts button[aria-pressed=true]{border-color:var(--moss);background:var(--moss-lo);color:var(--moss)}
+@media(max-width:560px){
+  .fields{grid-template-columns:1fr}
+  .rsvp-opts{grid-template-columns:1fr}
+  .rsvp-opts button{justify-content:flex-start;padding:14px 16px;min-height:0}
+}
+
 .zola{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .zcard{display:block;background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
   padding:18px 20px;text-decoration:none;color:inherit;
@@ -124,16 +162,50 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
     <div><span class="k">Dress</span><span class="v">Met Gala, Oscars, Tony night</span></div>
   </div>
 
-  <div class="card pad" id="whoBox" style="margin-bottom:8px">
-    <p style="margin:0 0 14px;color:var(--ink-2);line-height:1.6">
-      Put your name in and this page will show everything that applies to you,
-      including anything we still need from you.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <input id="gName" type="text" placeholder="First and last name" autocomplete="name"
-        style="flex:1;min-width:200px;border:1px solid var(--rule);border-radius:var(--r);padding:11px 13px;font:inherit;font-size:15px;background:#fff;color:var(--ink)">
-      <button class="btn" id="lookupBtn" type="button">Continue</button>
+  <div class="card" id="formCard">
+    <div class="pad">
+      <p style="margin:0 0 16px;color:var(--ink-2);line-height:1.6">
+        Put your name in and we will show you what applies to you &mdash; and anything we still need.</p>
+
+      <div class="lookup">
+        <input id="gName" type="text" placeholder="First and last name" autocomplete="name">
+        <button class="btn" id="lookupBtn" type="button">Continue</button>
+      </div>
+      <div class="msg" id="formMsg" hidden></div>
+
+      <div id="formFields" hidden>
+        <div id="rsvpWrap" hidden>
+          <div class="rsvp">
+            <div class="rsvp-q">Are you coming on Saturday?</div>
+            <div class="rsvp-sub">Rehearsal at 2:00, then the pool party 5:00 &ndash; 9:00.</div>
+            <div class="rsvp-opts" id="rsvpOpts">
+              <button type="button" data-rsvp="yes"><span class="ic">&#10003;</span>Yes, count me in</button>
+              <button type="button" data-rsvp="no"><span class="ic">&times;</span>Cannot make it</button>
+              <button type="button" data-rsvp="maybe"><span class="ic">?</span>Not sure yet</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="fields">
+          <label class="f" id="wEmail"><span>Email</span>
+            <input id="gEmail" type="email" autocomplete="email" placeholder="&mdash;">
+            <em class="have" hidden>&#10003; We have this</em></label>
+
+          <label class="f" id="wPhone"><span>Mobile</span>
+            <input id="gPhone" type="tel" autocomplete="tel" placeholder="&mdash;">
+            <em class="have" hidden>&#10003; We have this</em></label>
+
+          <label class="f wide" id="wDiet"><span>Allergies or dietary needs</span>
+            <textarea id="gDiet" placeholder="Vegan, gluten free, nut allergy, anything at all"></textarea>
+            <em class="have" hidden>&#10003; We have this &mdash; only fill in if it has changed</em></label>
+
+          <label class="f wide"><span>Anything else</span>
+            <textarea id="gNotes" placeholder="Optional"></textarea></label>
+        </div>
+
+        <button class="btn wide" id="submitBtn" type="button">Send</button>
+      </div>
     </div>
-    <div class="msg" id="formMsg" hidden></div>
   </div>
 
   <div class="note" id="satNote" hidden style="margin-top:20px">
@@ -321,52 +393,6 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
     </a>
   </div>
 
-  <h2 class="sec">One thing we need from you</h2>
-  <div class="card" id="formCard">
-    <div class="pad">
-      <p style="margin:0 0 18px;color:var(--ink-2);line-height:1.6">
-        The kitchen needs final numbers, so if you have an allergy or something you do not eat,
-        tell us here. We are also missing phone numbers and email addresses for a few people.
-        Type your name and we will show you what we still need.</p>
-
-      <label class="f"><span>Your name</span>
-        <input id="gName" type="text" placeholder="First and last" autocomplete="name">
-      </label>
-      <button class="btn" id="lookupBtn" type="button">Look me up</button>
-      <div class="msg" id="formMsg" hidden></div>
-
-      <div id="formFields" hidden style="margin-top:22px;padding-top:20px;border-top:1px solid var(--rule-2)">
-        <label class="f"><span>Email</span>
-          <input id="gEmail" type="email" autocomplete="email" placeholder="Only if we do not have it">
-        </label>
-        <label class="f"><span>Mobile</span>
-          <input id="gPhone" type="tel" autocomplete="tel" placeholder="In case we need you on the day">
-        </label>
-        <label class="f"><span>Allergies or dietary needs</span>
-          <textarea id="gDiet" placeholder="Vegan, gluten free, nut allergy, anything at all"></textarea>
-          <span class="hint">Tell us even if you think you have mentioned it before.</span>
-        </label>
-        
-        <div id="rsvpWrap" hidden>
-          <label class="f"><span>Coming to Saturday?</span>
-            <select id="gRsvp">
-              <option value="">Choose one</option>
-              <option value="yes">Yes, count me in</option>
-              <option value="no">Cannot make Saturday</option>
-              <option value="maybe">Not sure yet</option>
-            </select>
-          </label>
-        </div>
-        <label class="f"><span>Anything else</span>
-          <textarea id="gNotes" placeholder="Optional"></textarea>
-        </label>
-        <button class="btn" id="submitBtn" type="button">Send</button>
-      </div>
-    </div>
-  </div>
-
-
-
   <h2 class="sec">Getting there</h2>
   <div class="info">
     <div class="b"><h4>The venue</h4>
@@ -410,6 +436,7 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
 <script>
 const FN = 'https://ixtynzfktgfwjwlvdaho.supabase.co/functions/v1/guest-info';
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 async function call(payload){
@@ -421,36 +448,69 @@ async function call(payload){
 
 let isPool = false;
 
+let rsvpPick = null;
+
 $('#lookupBtn').onclick = async () => {
   const name = $('#gName').value.trim();
   if (!name){ show('Type your name first.','err'); return; }
   const btn = $('#lookupBtn');
   btn.disabled = true; btn.textContent = 'One moment…';
+
+  // reset every lookup, so a previous match cannot leak Saturday to the next person
+  isPool = false; rsvpPick = null;
+  $('#satBlock').hidden = true;
+  $('#satNote').hidden  = true;
+  $('#rsvpWrap').hidden = true;
+  $$('#rsvpOpts button').forEach(x => x.setAttribute('aria-pressed','false'));
+  ['#wEmail','#wPhone','#wDiet'].forEach(w => markHave(w, null, false));
+
   try {
     const res = await call({ action:'lookup', name });
     if (res.found){
       isPool = !!res.pool;
-      const miss = Object.entries(res.missing).filter(([,v])=>v).map(([k])=>k);
-      show(`Hello ${esc(res.name)}.` + (miss.length
-        ? ` We are missing your <strong>${miss.join(' and ')}</strong> — there is a short form further down.`
-        : ' Everything below applies to you.'), 'ok');
+      const miss = res.missing || {};
+      markHave('#wEmail', '#gEmail', !miss.email);
+      markHave('#wPhone', '#gPhone', !miss.phone);
+      markHave('#wDiet',  '#gDiet',  !miss.dietary);
+
+      const need = Object.entries(miss).filter(([,v]) => v).map(([k]) =>
+        k === 'dietary' ? 'anything you do not eat' : k);
+      show(`Hello ${esc(res.name)}.` + (need.length
+        ? ` We are still missing your <strong>${need.join('</strong>, <strong>')}</strong>.`
+        : ' We have everything we need — update anything below if it has changed.'), 'ok');
+
       if (isPool){
         $('#satBlock').hidden = false;
-        $('#satNote').hidden = false;
-        if ($('#rsvpWrap')) $('#rsvpWrap').hidden = false;
+        $('#satNote').hidden  = false;
+        $('#rsvpWrap').hidden = false;
       }
     } else {
-      isPool = false;
-      show('We could not match that name exactly — no problem, everything below still applies. '
-         + 'Fill in the form and we will sort it out.', 'info');
+      show('We could not match that name exactly — no problem. Fill in what you can below '
+         + 'and we will sort it out.', 'info');
     }
     $('#formFields').hidden = false;
   } catch {
-    show('Could not reach us just now. Everything below still applies — try the form again in a moment.','err');
+    show('Could not reach us just now. Fill in the form and try again in a moment.','err');
     $('#formFields').hidden = false;
   }
   btn.disabled = false; btn.textContent = 'Continue';
 };
+
+function markHave(wrapSel, inputSel, have){
+  const w = $(wrapSel); if (!w) return;
+  const tag = w.querySelector('.have');
+  if (tag) tag.hidden = !have;
+  w.classList.toggle('filled', !!have);
+  if (have && inputSel){
+    const i = $(inputSel);
+    if (i) i.placeholder = 'Already on file';
+  }
+}
+
+$$('#rsvpOpts button').forEach(b => b.onclick = () => {
+  rsvpPick = b.dataset.rsvp;
+  $$('#rsvpOpts button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+});
 
 $('#gName').addEventListener('keydown', e => {
   if (e.key === 'Enter'){ e.preventDefault(); $('#lookupBtn').click(); }
@@ -464,8 +524,7 @@ $('#submitBtn').onclick = async () => {
     email: $('#gEmail').value, phone: $('#gPhone').value,
     dietary: $('#gDiet').value, notes: $('#gNotes').value
   };
-  const rsvp = $('#gRsvp');
-  if (rsvp && isPool) payload.pool_rsvp = rsvp.value;
+  if (isPool && rsvpPick) payload.pool_rsvp = rsvpPick;
   if (!payload.email && !payload.phone && !payload.dietary && !payload.notes && !payload.pool_rsvp){
     show('Add at least one thing before sending.','err'); return;
   }
@@ -474,9 +533,10 @@ $('#submitBtn').onclick = async () => {
   try {
     await call(payload);
     $('#formCard').innerHTML =
-      '<div class="pad" style="text-align:center;padding:38px 24px">' +
-      '<h3 style="font-size:15px;letter-spacing:.16em;color:var(--moss);margin-bottom:9px">Thank you</h3>' +
-      '<p style="margin:0;color:var(--ink-2);font-size:15px;line-height:1.6">' +
+      '<div class="pad" style="text-align:center;padding:44px 24px">' +
+      '<h3 style="font-size:15px;letter-spacing:.16em;color:var(--moss);margin-bottom:9px;' +
+      'font-family:\'Barlow Condensed\',sans-serif;text-transform:uppercase">Thank you</h3>' +
+      '<p style="margin:0;color:var(--ink-2);font-size:16px;line-height:1.6">' +
       'Got it. If anything else comes up, just text Josh or Gabriel.</p></div>';
   } catch {
     show('That did not send. Check your connection and try again.','err');
