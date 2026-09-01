@@ -92,17 +92,15 @@ h2.sec{font-size:14px;letter-spacing:.2em;color:var(--brass);border-bottom:1px s
   .rsvp-opts button{justify-content:flex-start;padding:14px 16px;min-height:0}
 }
 
-.zola{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.zcard{display:block;background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
-  padding:18px 20px;text-decoration:none;color:inherit;
-  box-shadow:0 1px 2px rgba(17,20,24,.04),0 10px 26px -18px rgba(17,20,24,.18)}
-.zcard:hover{border-color:var(--brass-line);background:var(--brass-lo)}
-.zt{display:block;font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;
-  letter-spacing:.14em;font-size:15px;font-weight:700;color:var(--brass)}
-.zd{display:block;font-size:14.5px;color:var(--ink-2);line-height:1.55;margin:6px 0 12px}
-.zgo{display:block;font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;
-  letter-spacing:.12em;font-size:12.5px;font-weight:700;color:var(--ink-3)}
-.zcard:hover .zgo{color:var(--brass)}
+.hf{text-align:center}
+.hf-lead{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.14em;
+  font-size:clamp(18px,4vw,24px);font-weight:700;color:var(--brass);margin:0 0 10px;line-height:1.3}
+.hf p{margin:0 auto;max-width:46ch;font-size:15.5px;line-height:1.65;color:var(--ink-2)}
+.hf-btn{display:inline-block;margin-top:18px;background:var(--brass);color:#fff;
+  text-decoration:none;border-radius:var(--r);padding:13px 26px;
+  font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.12em;
+  font-size:15px;font-weight:700}
+.hf-btn:hover{background:#5A4419}
 .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;
   background:var(--rule);border:1px solid var(--rule);border-radius:var(--r);
   overflow:hidden;margin:26px 0 20px}
@@ -383,18 +381,12 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
 
 
 
-  <h2 class="sec">Staying over &middot; Honeymoon fund</h2>
-  <div class="zola">
-    <a class="zcard" href="https://www.zola.com/wedding/joshuaandgabriel/travel" target="_blank" rel="noopener">
-      <span class="zt">Hotels &amp; travel</span>
-      <span class="zd">Where to stay in Charleston, with rates we have arranged.</span>
-      <span class="zgo">Open on Zola &#8599;</span>
-    </a>
-    <a class="zcard" href="https://www.zola.com/wedding/joshuaandgabriel/registry" target="_blank" rel="noopener">
-      <span class="zt">Honeymoon fund</span>
-      <span class="zd">Only if you would like to. Your being there is plenty.</span>
-      <span class="zgo">Open on Zola &#8599;</span>
-    </a>
+  <h2 class="sec">Honeymoon fund</h2>
+  <div class="card pad hf">
+    <p class="hf-lead">Your being there is the gift.</p>
+    <p>Truly. But several of you have asked, so if you would like to do something,
+      we are putting together a honeymoon fund.</p>
+    <a class="hf-btn" href="https://www.honeyfund.com/site/perez-leduc-taylor-09-06-2026" target="_blank" rel="noopener">Our honeymoon fund &#8599;</a>
   </div>
 
   <h2 class="sec">Getting there</h2>
@@ -416,16 +408,9 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--rule);font-si
       <p>We are not able to offer childcare, so the evening is best suited to adults.
         Do let us know if that is a problem and we will work something out.</p></div>
 
-    <div class="b"><h4>Where to stay</h4>
-      <p>We have put together hotel options and rates on our Zola page.</p>
-      <p style="margin-top:8px"><a href="https://www.zola.com/wedding/joshuaandgabriel/travel"
-        target="_blank" rel="noopener">Hotels and travel &#8599;</a></p></div>
-
     <div class="b"><h4>Gifts</h4>
       <p>Your being there is the gift. If you would like to do something anyway,
-        we are putting together a honeymoon fund.</p>
-      <p style="margin-top:8px"><a href="https://www.zola.com/wedding/joshuaandgabriel/registry"
-        target="_blank" rel="noopener">Honeymoon fund &#8599;</a></p></div>
+        there is a <a href="https://www.honeyfund.com/site/perez-leduc-taylor-09-06-2026" target="_blank" rel="noopener">honeymoon fund</a>.</p></div>
 
     <div class="b"><h4>Questions on the day</h4>
       <p>Loraine Cook, our planner<br><a href="tel:8436958884">843.695.8884</a></p></div>
